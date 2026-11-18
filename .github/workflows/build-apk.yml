@@ -24,8 +24,8 @@ jobs:
       - name: Build web app
         run: npx vite build
 
-      - name: Copy web assets to Android
-        run: npx cap copy android
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -37,12 +37,9 @@ jobs:
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Regenerate Gradle Wrapper
+      - name: Fix Gradle Wrapper JAR
         run: |
-          wget -q https://services.gradle.org/distributions/gradle-8.14.3-bin.zip -O /tmp/gradle.zip
-          unzip -q /tmp/gradle.zip -d /tmp/
-          cd android
-          /tmp/gradle-8.14.3/bin/gradle wrapper --gradle-version 8.14.3
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.14.3/gradle/wrapper/gradle-wrapper.jar -o android/gradle/wrapper/gradle-wrapper.jar
 
       - name: Build debug APK
         working-directory: android
